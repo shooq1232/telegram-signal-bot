@@ -1,20 +1,27 @@
-import requests
+name: Daily Telegram Signal
 
-BOT_TOKEN = 'توكن البوت هنا'
-CHAT_ID = 'رقم الشات ID'
+on:
+  schedule:
+    - cron: '0 13 * * *'  # يوميًا الساعة 4 العصر بتوقيت السعودية
+  workflow_dispatch:  # لتشغيله يدوي إذا احتجت
 
-# قراءة التوصية من الملف
-with open("signal.txt", "r") as file:
-    message = file.read()
+jobs:
+  run-signal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-# إرسال التوصية إلى تيليجرام
-url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-payload = {
-    "chat_id": CHAT_ID,
-    "text": message
-}
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-response = requests.post(url, data=payload)
+      - name: Install dependencies
+        run: pip install pandas requests
 
-# طباعة الحالة
-print("تم الإرسال بنجاح ✅" if response.status_code == 200 else f"فشل الإرسال ❌ {response.text}")
+      - name: Generate signal
+        run: python generate_signal.py
+
+      - name: Send signal to Telegram
+        run: python send_telegram.py
