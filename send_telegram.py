@@ -1,16 +1,20 @@
 import requests
 
-BOT_TOKEN = '7690624543:AAHMukzxEfMRbb4LK94zkOxNO8AEAN4G3J4'
-CHAT_ID = '168259494'
+BOT_TOKEN = 'توكن البوت هنا'
+CHAT_ID = 'رقم الشات ID'
 
-# نقرأ التوصية من ملف تم توليده
-with open("signal.txt", "r") as f:
-    message = f.read()
+# قراءة التوصية من الملف
+with open("signal.txt", "r") as file:
+    message = file.read()
 
-def send_telegram():
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    data = {"chat_id": CHAT_ID, "text": message}
-    res = requests.post(url, data=data)
-    print("✅ تم الإرسال" if res.ok else f"❌ خطأ: {res.text}")
+# إرسال التوصية إلى تيليجرام
+url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+payload = {
+    "chat_id": CHAT_ID,
+    "text": message
+}
 
-send_telegram()
+response = requests.post(url, data=payload)
+
+# طباعة الحالة
+print("تم الإرسال بنجاح ✅" if response.status_code == 200 else f"فشل الإرسال ❌ {response.text}")
